@@ -28,6 +28,10 @@ inputs:
   trimIlluminaclip: string
   trimIlluminaclip2: string?
   trimIlluminaclip3: string?
+  megahitKStep: int?
+  minContigLength:
+    type: int?
+    label: minimum contig length for assembly
 
 
 steps:
@@ -53,6 +57,49 @@ steps:
       - reverseUnpaired
       - log
 
+  assembleViral:
+    label: 'assemble reads'
+    run: tools/megahit.cwl
+    in:
+      forward: trimViral/forwardPaired
+      reverse: trimViral/reversePaired
+      minContigLength: minContigLength
+      kStep: megahitKStep
+    out:
+      - assembly
+      - log
+
+  mapViral:
+    label: 'map paired reads to assembly'
+    run: tools/bbmap.cwl
+    in:
+      forward: trimViral/forwardPaired
+      reverse: trimViral/reversePaired
+      reference: assembleViral/assembly
+      outFileSuffix:
+        default: ''
+    out:
+      - stdout
+      - stats
+      - covstats
+      - rpkm
+
+  sortViralSam:
+    label: 'sort SAM file'
+    run: tools/samtoolsSort.cwl
+    in:
+      inputFile: mapViral/stdout
+    out:
+      - samFile
+
+  aleViral:
+    label: 'assess contigs'
+    run: tools/ale.cwl
+    in:
+      sam: sortViralSam/samFile
+      assembly: assembleViral/assembly
+    out:
+      - aleOutput
 
 outputs:
   trimViralR1:
@@ -61,3 +108,15 @@ outputs:
   trimViralR2:
     type: File
     outputSource: trimViral/reversePaired
+  assemblyOfViral:
+    type: File
+    outputSource: assembleViral/assembly
+  mappingViral:
+    type: File
+    outputSource: mapViral/stdout
+  samViral:
+    type: File
+    outputSource: sortViralSam/samFile
+  aleViralOutput:
+    type: File
+    outputSource: aleViral/aleOutput
