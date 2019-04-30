@@ -1,0 +1,21 @@
+fastqCellularR1:
+  class: File
+  path: /home/chenke/dev/mgcrispr/data/SRR1438009_1.fastq.gz
+fastqCellularR2:
+  class: File
+  path: /home/chenke/dev/mgcrispr/data/SRR1438009_2.fastq.gz
+fastqViralR1:
+  class: File
+  path: /home/chenke/dev/mgcrispr/data/SRR1438009_1.fastq.gz
+fastqViralR2:
+  class: File
+  path: /home/chenke/dev/mgcrispr/data/SRR1438009_2.fastq.gz
+
+trimHeadcrop: 0
+trimLeading: 3
+trimTrailing: 3
+trimSlidingwindow: 4:30
+trimMinlen: 100
+trimIlluminaclip: TruSeq2-PE.fa:2:30:10:1:true
+trimIlluminaclip2: TruSeq3-PE.fa:2:30:10:1:true
+trimIlluminaclip3: TruSeq3-PE-2.fa:2:30:10:1:true
