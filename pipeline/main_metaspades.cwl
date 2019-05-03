@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: Workflow
-label: mgcrispr
+label: mgcrispr_metaspades
 
 inputs:
   fastqCellularR1: File
@@ -58,13 +58,13 @@ steps:
       - log
 
   assembleViral:
-    label: 'assemble reads'
-    run: tools/megahit.cwl
+    label: 'assemble reads using metaspades'
+    run: tools/metaspades.cwl
     in:
       forward: trimViral/forwardPaired
       reverse: trimViral/reversePaired
       minContigLength: minContigLength
-      kStep: megahitKStep
+      kList: metaspadesKList
     out:
       - assembly
       - log
